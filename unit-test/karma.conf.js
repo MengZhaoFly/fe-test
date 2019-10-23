@@ -1,7 +1,8 @@
 // Karma configuration
 // Generated on Fri Oct 11 2019 20:35:36 GMT+0800 (GMT+08:00)
-
-module.exports = function(config) {
+const path = require('path');
+const srcPath = path.resolve(__dirname, './src/');
+module.exports = function (config) {
   config.set({
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
@@ -27,16 +28,27 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'src/**/*.js': ['webpack', 'coverage'],
+      'src/**/*.js': ['webpack'],
       'test/**/*.spec.js': ['webpack']
     },
-    webpack: {},
+    webpack: {
+      module: {
+        rules: [
+          // instrument only testing sources with Istanbul
+          {
+            test: /\.js$/,
+            use: { loader: 'istanbul-instrumenter-loader' },
+            include: [path.resolve('./src/')]
+          }
+        ]
+      }
+    },
 
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress', 'coverage'],
+    reporters: ['progress', 'coverage-istanbul'],
 
 
     // web server port
@@ -69,8 +81,8 @@ module.exports = function(config) {
     // how many browser should be started simultaneous
     concurrency: Infinity,
     coverageReporter: {
-      type : 'html',
-      dir : 'coverage'
+      type: 'html',
+      dir: 'coverage'
     },
   })
 }

@@ -9,7 +9,9 @@ const testPromise = function() {
     }, 2000);
   })
 }
-module.exports = {
-  add,
-  testPromise
-}
+window.add = add;
+window.testPromise = testPromise;
+// module.exports = {
+//   add,
+//   testPromise
+// }
